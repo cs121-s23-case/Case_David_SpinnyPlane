@@ -1,0 +1,211 @@
+[gd_scene load_steps=17 format=3 uid="uid://bybijvc5g32i8"]
+
+[ext_resource type="Script" path="res://FlappyController.gd" id="1_2hw5b"]
+[ext_resource type="Texture2D" uid="uid://cqcih4cw20p4o" path="res://Screenshot 2024-09-18 155704.png" id="1_u4yc7"]
+[ext_resource type="Texture2D" uid="uid://bb7x5vm5wojpq" path="res://Screenshot 2024-09-18 121407.png" id="2_gudba"]
+[ext_resource type="PackedScene" uid="uid://ck7h7gglgqh8t" path="res://rock.tscn" id="4_ph6ex"]
+[ext_resource type="AudioStream" uid="uid://cllx4aqp8rag5" path="res://Three Red Hearts - Connected.ogg" id="5_hdqtp"]
+[ext_resource type="AudioStream" uid="uid://cnrndrscabvil" path="res://Three Red Hearts - Pixel War 2.ogg" id="6_hrrvu"]
+[ext_resource type="Texture2D" uid="uid://bxewxle5x7fcd" path="res://Screenshot 2024-09-18 180524.png" id="7_1dvd1"]
+
+[sub_resource type="GDScript" id="GDScript_ojh5r"]
+script/source = "extends RigidBody2D
+var velocity = Vector2.ZERO
+@onready var animation = $AnimationPlayer
+var tracking = false
+var startPos = Vector2()
+const GRAVITY = 35
+const SPEED = 3000
+const JUMPFORCE = -900
+
+func _ready() -> void:
+	var velocity = Vector2(200, 0)  # Moving right at 100 units per second
+	linear_velocity = velocity
+	
+	
+func _process(delta):
+	if Input.is_action_just_pressed(\"flap\"):
+		apply_central_impulse(Vector2(0,-1000))
+		animation.play(\"flap\")
+
+func _on_flap_animation_finished() -> void:
+	pass # Replace with function body.
+# self.position.x += (number)
+
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	pass # Replace with function body.
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bgfah"]
+radius = 47.2652
+
+[sub_resource type="Animation" id="Animation_o862w"]
+resource_name = "glide"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("plane/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_n44ra"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("plane/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_le5fp"]
+resource_name = "flap"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("plane/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.266667, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [1, 2, 0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_isfxw"]
+_data = {
+"RESET": SubResource("Animation_n44ra"),
+"flap": SubResource("Animation_le5fp"),
+"glide": SubResource("Animation_o862w")
+}
+
+[sub_resource type="Animation" id="Animation_688ub"]
+resource_name = "slide in"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Label:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(124, -147), Vector2(111, 218)]
+}
+
+[sub_resource type="Animation" id="Animation_1oxwq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Label:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(110, 213)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dsshj"]
+_data = {
+"RESET": SubResource("Animation_1oxwq"),
+"slide in": SubResource("Animation_688ub")
+}
+
+[node name="spinnyplane" type="Node2D"]
+script = ExtResource("1_2hw5b")
+rock = ExtResource("4_ph6ex")
+
+[node name="Screenshot2024-09-18155704" type="Sprite2D" parent="."]
+position = Vector2(576.5, 325)
+scale = Vector2(3.16758, 2.99535)
+texture = ExtResource("1_u4yc7")
+
+[node name="Screenshot2024-09-18180524" type="Sprite2D" parent="."]
+position = Vector2(581, 617)
+scale = Vector2(3.20548, 2.65385)
+texture = ExtResource("7_1dvd1")
+
+[node name="plane" type="RigidBody2D" parent="."]
+position = Vector2(212, 286)
+script = SubResource("GDScript_ojh5r")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="plane"]
+position = Vector2(-2, 1)
+shape = SubResource("CircleShape2D_bgfah")
+
+[node name="Sprite" type="Sprite2D" parent="plane"]
+position = Vector2(-1, 0)
+texture = ExtResource("2_gudba")
+vframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="plane"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_isfxw")
+}
+
+[node name="rock" parent="." instance=ExtResource("4_ph6ex")]
+position = Vector2(263, 586)
+
+[node name="rock_timer" type="Timer" parent="."]
+autostart = true
+
+[node name="sfx" type="Node2D" parent="."]
+
+[node name="bgm" type="AudioStreamPlayer2D" parent="sfx"]
+stream = ExtResource("5_hdqtp")
+autoplay = true
+
+[node name="thud" type="AudioStreamPlayer2D" parent="sfx"]
+stream = ExtResource("6_hrrvu")
+
+[node name="GameOver" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 422.0
+offset_top = 107.0
+offset_right = 603.0
+offset_bottom = 205.0
+
+[node name="Label" type="Label" parent="GameOver"]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 213.0
+offset_right = 321.0
+offset_bottom = 286.0
+text = "Game Over"
+
+[node name="Button" type="Button" parent="GameOver"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 267.0
+offset_right = 200.0
+offset_bottom = 298.0
+text = "Play Again"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GameOver"]
+libraries = {
+"": SubResource("AnimationLibrary_dsshj")
+}
+
+[connection signal="timeout" from="rock_timer" to="." method="_on_rock_timer_timeout"]
+[connection signal="pressed" from="GameOver/Button" to="." method="_on_button_pressed"]
