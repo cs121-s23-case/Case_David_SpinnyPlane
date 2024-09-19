@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bybijvc5g32i8"]
+[gd_scene load_steps=18 format=3 uid="uid://bybijvc5g32i8"]
 
 [ext_resource type="Script" path="res://FlappyController.gd" id="1_2hw5b"]
 [ext_resource type="Texture2D" uid="uid://cqcih4cw20p4o" path="res://Screenshot 2024-09-18 155704.png" id="1_u4yc7"]
@@ -40,21 +40,6 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 [sub_resource type="CircleShape2D" id="CircleShape2D_bgfah"]
 radius = 47.2652
 
-[sub_resource type="Animation" id="Animation_o862w"]
-resource_name = "glide"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("plane/Sprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
 [sub_resource type="Animation" id="Animation_n44ra"]
 length = 0.001
 tracks/0/type = "value"
@@ -86,26 +71,26 @@ tracks/0/keys = {
 "values": [1, 2, 0]
 }
 
+[sub_resource type="Animation" id="Animation_o862w"]
+resource_name = "glide"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("plane/Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_isfxw"]
 _data = {
 "RESET": SubResource("Animation_n44ra"),
 "flap": SubResource("Animation_le5fp"),
 "glide": SubResource("Animation_o862w")
-}
-
-[sub_resource type="Animation" id="Animation_688ub"]
-resource_name = "slide in"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Label:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(124, -147), Vector2(111, 218)]
 }
 
 [sub_resource type="Animation" id="Animation_1oxwq"]
@@ -123,22 +108,40 @@ tracks/0/keys = {
 "values": [Vector2(110, 213)]
 }
 
+[sub_resource type="Animation" id="Animation_688ub"]
+resource_name = "slide in"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Label:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(124, -147), Vector2(111, 218)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dsshj"]
 _data = {
 "RESET": SubResource("Animation_1oxwq"),
 "slide in": SubResource("Animation_688ub")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b81qr"]
+size = Vector2(19, 656)
+
 [node name="spinnyplane" type="Node2D"]
 script = ExtResource("1_2hw5b")
 rock = ExtResource("4_ph6ex")
 
-[node name="Screenshot2024-09-18155704" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="."]
 position = Vector2(576.5, 325)
 scale = Vector2(3.16758, 2.99535)
 texture = ExtResource("1_u4yc7")
 
-[node name="Screenshot2024-09-18180524" type="Sprite2D" parent="."]
+[node name="Hills" type="Sprite2D" parent="."]
 position = Vector2(581, 617)
 scale = Vector2(3.20548, 2.65385)
 texture = ExtResource("7_1dvd1")
@@ -147,12 +150,13 @@ texture = ExtResource("7_1dvd1")
 position = Vector2(212, 286)
 script = SubResource("GDScript_ojh5r")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="plane"]
+[node name="PlaneCollision" type="CollisionShape2D" parent="plane"]
 position = Vector2(-2, 1)
 shape = SubResource("CircleShape2D_bgfah")
 
 [node name="Sprite" type="Sprite2D" parent="plane"]
 position = Vector2(-1, 0)
+rotation = -2.51327
 texture = ExtResource("2_gudba")
 vframes = 3
 
@@ -206,6 +210,12 @@ text = "Play Again"
 libraries = {
 "": SubResource("AnimationLibrary_dsshj")
 }
+
+[node name="Walls" type="StaticBody2D" parent="."]
+
+[node name="Wall" type="CollisionShape2D" parent="Walls"]
+position = Vector2(322, 330)
+shape = SubResource("RectangleShape2D_b81qr")
 
 [connection signal="timeout" from="rock_timer" to="." method="_on_rock_timer_timeout"]
 [connection signal="pressed" from="GameOver/Button" to="." method="_on_button_pressed"]

@@ -1,5 +1,5 @@
 extends Area2D
-#var root_node = get_tree().root  FIX
+#var root_node = get_tree()
 #var flappy_controller = root_node.get_node("FlappyController") 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
